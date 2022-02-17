@@ -1,25 +1,22 @@
-﻿using System;
+﻿using DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Entities
+namespace Business.DTO
 {
-    public class Tasks : ProjectTask
+    public class TaskDto
     {
+        public int Id{ get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Priority { get; set; }
         public int ProjectId { get; set; }
-        public Project Project { get; set; }
+        public string ProjectName { get; set; }
         public TasksStatus Status { get; set; }
-    }
 
-    public enum TasksStatus
-    {
-        ToDo,
-        InProgress,
-        Done
+       // public string Error { get; set; }
     }
 }

@@ -31,10 +31,17 @@ namespace TaskTracker
         public void ConfigureServices(IServiceCollection services)
         {
 
-            //Adding DI for Get method
+            //Adding DI AddTransient
             services.AddTransient<IGetTaskById, GetTaskById>();
-
-
+            services.AddTransient<IGetProjectById, GetProjectById>();
+            services.AddTransient<IGetAllProjects, GetAllProjects>();
+            services.AddTransient<IGetTask, GetTask>();
+            services.AddTransient<ICreateTask, CreateTasks>();
+            services.AddTransient<ICreateProject, CreateProject>();
+            services.AddTransient<IDeleteTask, DeleteTask>();
+            services.AddTransient<IDeleteProject, DeleteProject>();
+            services.AddTransient<IPutTask, PutTask>();
+            services.AddTransient<IPutProject, PutProject>();
 
             services.AddDbContext<TaskTrackerContext>(options =>
             {

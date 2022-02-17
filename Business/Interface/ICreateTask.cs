@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Business.Interface
 {
-    public interface IGetTaskById
+    public interface ICreateTask
     {
-        public object getTaskById(TaskTrackerContext context, int id);
-        
+        public void CreateTask(TaskTrackerContext context, TaskDto dto);
     }
 }

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Business.Interface
 {
-    public interface IGetTaskById
+    public interface IGetAllProjects
     {
-        public object getTaskById(TaskTrackerContext context, int id);
-        
+        public IQueryable getAllProjects(TaskTrackerContext context, ProjectFilterDto filterDto);
     }
 }

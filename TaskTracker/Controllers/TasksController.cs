@@ -1,5 +1,7 @@
-﻿using Business.Interface;
+﻿using Business.DTO;
+using Business.Interface;
 using DataAccess;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,38 +18,93 @@ namespace TaskTracker.Controllers
     {
         // GET: api/<TasksController>
         [HttpGet]
-        public IActionResult Get([FromQuery] int id,
-            [FromServices] TaskTrackerContext context,
-            [FromServices] IGetTaskById getTask)
+        public IActionResult Get([FromQuery] TaskFilterDto taskFilterDto,
+            [FromServices] IGetTask getTask,
+            [FromServices] TaskTrackerContext context)
         {
-            return Ok(getTask.getTaskById(context, id));
+            try
+            {
+                var result = getTask.getTasks(context, taskFilterDto);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
 
         }
 
 
         // GET api/<TasksController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id,
+            [FromServices] IGetTaskById query,
+            [FromServices] TaskTrackerContext context)
         {
-            return "value";
+            try
+            {
+                var tasksForReturn = query.getTaskById(context, id);
+                return Ok(tasksForReturn);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // POST api/<TasksController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] TaskDto taskDto,
+            [FromServices] ICreateTask createTask,
+            [FromServices] TaskTrackerContext context)
         {
+            try
+            {
+                createTask.CreateTask(context, taskDto);
+                return Ok();    
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // PUT api/<TasksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, 
+            [FromBody] PutTaskDto dto,
+            [FromServices] IPutTask putTask,
+            [FromServices] TaskTrackerContext context)
         {
+            try
+            {
+                putTask.PutTasks(context, dto, id);
+            }
+            catch(Exception ex)
+            {
+                BadRequest(ex);
+            }
+            
         }
 
         // DELETE api/<TasksController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(int id,
+            [FromServices] IDeleteTask deleteTask,
+            [FromServices] TaskTrackerContext context)
         {
+            try
+            {
+                
+                deleteTask.Execute(context, id);
+            } 
+            catch(Exception ex)
+            {
+                //ispravi ovo
+                BadRequest(ex);
+            }
+            
+                
         }
     }
 }
