@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Interface;
 using DataAccess;
 using DataAccess.Entities;
@@ -12,40 +13,57 @@ namespace Business.Implementations
 {
    public class GetTaskById : IGetTaskById
     {
-        public object getTaskById(TaskTrackerContext context, int id)
+        public ExecutionResult getTaskById(TaskTrackerContext context, int id)
         {
             TaskDto dto = new TaskDto();
-            
+            ExecutionResult exec = new ExecutionResult();
 
 
-            var existingTaskQuery = from task in context.tasks
-                                    where task.Id == id
-                                    join project in context.projects on task.ProjectId equals project.Id
-                                    select new
-                                    {
-                                        TaskId = task.Id,
-                                        TaskName = task.Name,
-                                        TaskDescription = task.Description,
-                                        TaskPriority = task.Priority,
-                                        TaskProjectId = task.ProjectId,
-                                        ProjectName = project.Name,
-                                        TaskStatus = task.Status
+            var tasks = context.tasks.AsQueryable();
+            var projects = context.projects.AsQueryable();
+            var existingTaskQuery = (from t in tasks
+                                     where t.Id == id
+                                     join p in projects on t.ProjectId equals p.Id
+                                     select new
+                                     {
+                                         TaskId = t.Id,
+                                         TaskName = t.Name,
+                                         TaskDescription = t.Description,
+                                         TaskPriority = t.Priority,
+                                         TaskProjectId = t.ProjectId,
+                                         ProjectName = p.Name,
+                                         TaskStatus = t.Status
 
-                                    };
+                                     }).ToList();
 
             
             var existingTask = existingTaskQuery.FirstOrDefault();
+            if(existingTask != null)
+            {
+                var data = tasks.Select(t => new TaskDto
+                {
+                    Id = existingTask.TaskId,
+                    Name = existingTask.TaskName,
+                    Description = existingTask.TaskDescription,
+                    Priority = existingTask.TaskPriority,
+                    ProjectId = existingTask.TaskProjectId,
+                    ProjectName = existingTask.ProjectName,
+                    Status = existingTask.TaskStatus
+                }).ToList();
+                exec.Data = data;
+                return exec;
+
+
+            }
+            else
+            {
+                exec.Error.Add("There is no task with such id");
+                return exec;
+            }
 
 
 
-                dto.Id = existingTask.TaskId;
-                dto.Name = existingTask.TaskName;
-                dto.Description = existingTask.TaskDescription;
-                dto.Priority = existingTask.TaskPriority;
-                dto.ProjectId = existingTask.TaskProjectId;
-                dto.ProjectName = existingTask.ProjectName;
-                dto.Status = existingTask.TaskStatus;
-                return dto;
+                
             }
             
         }

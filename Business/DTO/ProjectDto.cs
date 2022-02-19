@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class ProjectDto
+    public class ProjectDto : PrimaryDto
     {
         public string Name { get; set; }
         public DateTime? StartDate { get; set; }

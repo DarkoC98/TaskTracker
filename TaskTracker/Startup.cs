@@ -42,6 +42,7 @@ namespace TaskTracker
             services.AddTransient<IDeleteProject, DeleteProject>();
             services.AddTransient<IPutTask, PutTask>();
             services.AddTransient<IPutProject, PutProject>();
+            services.AddTransient<IGetAllTasksForOneProject, GetAllTasksForOneProject>();
 
             services.AddDbContext<TaskTrackerContext>(options =>
             {

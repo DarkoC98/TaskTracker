@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using Business.Execution;
+using DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Business.Interface
 {
     public interface IDeleteProject
     {
-        public void Execute(TaskTrackerContext context, int id);
+        public ExecutionResult Execute(TaskTrackerContext context, int id);
     }
 }

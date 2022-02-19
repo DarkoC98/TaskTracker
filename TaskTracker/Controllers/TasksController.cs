@@ -22,14 +22,28 @@ namespace TaskTracker.Controllers
             [FromServices] IGetTask getTask,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = getTask.getTasks(context, taskFilterDto );
+
+            var result = returns.Data;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
+
             try
             {
-                var result = getTask.getTasks(context, taskFilterDto);
-                return Ok(result);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(result);
+
+                }
+
             }
             catch (Exception)
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
         }
@@ -38,17 +52,28 @@ namespace TaskTracker.Controllers
         // GET api/<TasksController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id,
-            [FromServices] IGetTaskById query,
+            [FromServices] IGetTaskById getTask,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = getTask.getTaskById(context, id);
+            var result = returns.Data;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                var tasksForReturn = query.getTaskById(context, id);
-                return Ok(tasksForReturn);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(result);
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -58,53 +83,90 @@ namespace TaskTracker.Controllers
             [FromServices] ICreateTask createTask,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = createTask.CreateTask(context, taskDto);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                createTask.CreateTask(context, taskDto);
-                return Ok();    
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
         // PUT api/<TasksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, 
+        public IActionResult Put(int id, 
             [FromBody] PutTaskDto dto,
             [FromServices] IPutTask putTask,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = putTask.PutTasks(context, dto, id);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                putTask.PutTasks(context, dto, id);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
         }
 
         // DELETE api/<TasksController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id,
+        public IActionResult Delete(int id,
             [FromServices] IDeleteTask deleteTask,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = deleteTask.Execute(context, id);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                
-                deleteTask.Execute(context, id);
-            } 
-            catch(Exception ex)
-            {
-                //ispravi ovo
-                BadRequest(ex);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+
+                }
+
             }
-            
-                
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+
         }
     }
 }

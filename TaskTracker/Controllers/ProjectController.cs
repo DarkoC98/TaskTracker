@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Implementations;
 using Business.Interface;
 using DataAccess;
@@ -17,22 +18,38 @@ namespace TaskTracker.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
+        
+
         // GET: api/<ProjectController>
         [HttpGet]
         public IActionResult Get([FromQuery] ProjectFilterDto filterDto,
             [FromServices] IGetAllProjects getAll,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = getAll.getAllProjects(context, filterDto);
+
+            var result = returns.Data;
+            var error = returns.Error;
+            var success = returns.IsSuccessful; 
+            
             try
             {
-                var result = getAll.getAllProjects(context, filterDto);
-                return Ok(result);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(result);
+                    
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
         }
 
         // GET api/<ProjectController>/5
@@ -41,15 +58,27 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context,
             [FromServices] IGetProjectById getProject)
         {
+            var returns = getProject.getProjectsById(context, id);
+            var result = returns.Data;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                return Ok(getProject.getProjectsById(context, id));
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(result);
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-                  
+
         }
 
         // POST api/<ProjectController>
@@ -58,43 +87,119 @@ namespace TaskTracker.Controllers
             [FromServices] ICreateProject createProject,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = createProject.CreateProjects(context, projectDto);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful; 
             try
             {
-                createProject.CreateProjects(context, projectDto);
-                return Ok();
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+                }
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
         }
 
         // PUT api/<ProjectController>/5
         [HttpPut("{id}")]
-        public void Put(int id,
+        public IActionResult Put(int id,
             [FromBody] ProjectDto dto,
             [FromServices] IPutProject putProject,
             [FromServices] TaskTrackerContext context)
         {
 
-            putProject.PutProjects(context, dto, id);
+            var returns = putProject.PutProjects(context, dto, id);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
+            try
+            {
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+                }
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // DELETE api/<ProjectController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id,
+        public IActionResult Delete(int id,
             [FromServices] IDeleteProject deleteProject,
             [FromServices] TaskTrackerContext context)
         {
+            var returns = deleteProject.Execute(context, id);
+            var result = returns.Data;
+            var message = returns.Message;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
             try
             {
-                deleteProject.Execute(context, id);
+                if (!success)
+                {
+                    return BadRequest(error);
+                }
+                else
+                {
+                    return Ok(message);
+                    
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+        [HttpGet("{projectId}/Tasks")]
+        public IActionResult GetAllProjectTasks(int projectId,
+            [FromServices] TaskTrackerContext context,
+            [FromServices] IGetAllTasksForOneProject getTasks)
+        {
+
+            var returns = getTasks.getAllTasksForProject(context, projectId);
+            var result = returns.Data;
+            var error = returns.Error;
+            var success = returns.IsSuccessful;
+            try
+            {
+                
+                
+                if (!success)
+                {
+                    return BadRequest(error);   
+                }
+                else
+                {
+                    return Ok(result);
+                }
+                
+            }
+            catch (Exception )
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
     }
 }

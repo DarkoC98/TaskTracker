@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Interface;
 using DataAccess;
 using DataAccess.Entities;
@@ -12,8 +13,9 @@ namespace Business.Implementations
 {
     public class PutProject : IPutProject
     {
-        public void PutProjects(TaskTrackerContext context, ProjectDto dto, int id)
+        public ExecutionResult PutProjects(TaskTrackerContext context, ProjectDto dto, int id)
         {
+            ExecutionResult exec = new ExecutionResult();
             var existingProjectQuery = from projects in context.projects
                                     where projects.Id == id
                                     select projects;
@@ -23,24 +25,96 @@ namespace Business.Implementations
 
             if (existingProject != null)
             {
-                existingProject.Name = dto.Name;
-                existingProject.StartDate = dto.StartDate;
-                existingProject.EndDate = dto.EndDate;
-                existingProject.Status = dto.Status;
+                if(!string.IsNullOrEmpty(existingProject.Name))
+                {
+                    existingProject.Name = dto.Name;
+                }
+                else
+                {
+                    exec.Error.Add("Name cant be empty");
+                    return exec;
+                }
+                if (existingProject.StartDate != null)
+                {
+                    existingProject.StartDate = dto.StartDate;
+                }
+                else
+                {
+                    exec.Error.Add("Start date cant be empty");
+                    return exec;
+                }
+                if(existingProject.EndDate > existingProject.StartDate)
+                {
+                    existingProject.EndDate = dto.EndDate;
+                }
+                else
+                {
+                    exec.Error.Add("End date has to be after Start date");
+                    return exec;
+                }
+                if(existingProject.Status >= 0 && Convert.ToInt32(existingProject.Status) <= 2)
+                {
+                    existingProject.Status = dto.Status;
+                }
+                else
+                {
+                    exec.Error.Add("Status has to be in range from 0 to 2");
+                    return exec;
+                }
+                
                 existingProject.Priority = dto.Priority;
+                exec.Message.Add("Project is successfuly modified");
+                context.SaveChanges();
+                return exec;
             }
             else
             {
 
                 Project projectForInsert = new Project();
-                projectForInsert.Name = dto.Name;
-                projectForInsert.StartDate = dto.StartDate;
-                projectForInsert.EndDate = dto.EndDate;
-                projectForInsert.Status = dto.Status;
-                projectForInsert.Priority = dto.Priority;
+                if (!string.IsNullOrEmpty(projectForInsert.Name))
+                {
+                    projectForInsert.Name = dto.Name;
+                }
+                else
+                {
+                    exec.Error.Add("Name cant be empty");
+                    return exec;
+                }
+                if (projectForInsert.StartDate != null)
+                {
+                    projectForInsert.StartDate = dto.StartDate;
+                }
+                else
+                {
+                    exec.Error.Add("Start date cant be empty");
+                    return exec;
+                }
+                if (projectForInsert.EndDate > projectForInsert.StartDate)
+                {
+                    projectForInsert.EndDate = dto.EndDate;
+                }
+                else
+                {
+                    exec.Error.Add("End date has to be after Start date");
+                    return exec;
+                }
+                if (projectForInsert.Status >= 0 && Convert.ToInt32(projectForInsert.Status) <= 2)
+                {
+                    projectForInsert.Status = dto.Status;
+                }
+                else
+                {
+                    exec.Error.Add("Status has to be in range from 0 to 2");
+                    return exec;
+                }
+
                 context.projects.Add(projectForInsert);
+                exec.Message.Add("Project is successfuly created");
+                context.SaveChanges();
+                return exec;
+
             }
-            context.SaveChanges();
+            
         }
     }
 }

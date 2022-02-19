@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Business.Interface
 {
-    public interface IGetAllProjects
+    public interface IGetAllTasksForOneProject
     {
-        public ExecutionResult getAllProjects(TaskTrackerContext context, ProjectFilterDto filterDto);
+        public ExecutionResult getAllTasksForProject(TaskTrackerContext context, int id);
     }
 }

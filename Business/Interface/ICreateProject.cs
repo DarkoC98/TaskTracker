@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Business.Interface
 {
     public interface ICreateProject
     {
-        public void CreateProjects(TaskTrackerContext context, ProjectDto dto);
+        public ExecutionResult CreateProjects(TaskTrackerContext context, ProjectDto dto);
     }
 }

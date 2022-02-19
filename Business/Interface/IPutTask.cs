@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Business.Interface
 {
     public interface IPutTask
     {
-        public void PutTasks(TaskTrackerContext context, PutTaskDto dto, int id);
+        public ExecutionResult PutTasks(TaskTrackerContext context, PutTaskDto dto, int id);
     }
 }

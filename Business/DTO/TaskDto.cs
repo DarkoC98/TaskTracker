@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class TaskDto
+    public class TaskDto : PrimaryDto
     {
         public int Id{ get; set; }
         public string Name { get; set; }

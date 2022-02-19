@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Interface;
 using DataAccess;
 using DataAccess.Entities;
@@ -12,35 +13,107 @@ namespace Business.Implementations
 {
     public class PutTask : IPutTask
     {
-        public void PutTasks(TaskTrackerContext context, PutTaskDto dto, int id)
+        public ExecutionResult PutTasks(TaskTrackerContext context, PutTaskDto dto, int id)
         {
+            ExecutionResult exec = new ExecutionResult();
             var existingTaskQuery = from tasks in context.tasks
                                     where tasks.Id == id
                                     select tasks;
 
             var existingTask = existingTaskQuery.FirstOrDefault();
 
-
             if (existingTask != null)
             {
-                existingTask.Name = dto.Name;
-                existingTask.Description = dto.Description;
-                existingTask.Priority = dto.Priority;
-                existingTask.ProjectId = dto.ProjectId;
-                existingTask.ProjectId = dto.ProjectId;
+                if (!string.IsNullOrEmpty(dto.Name))
+                {
+                    existingTask.Name = dto.Name;
+                }
+                else
+                {
+                    exec.Error.Add("Name cant be empty");
+                    return exec;
+                }
+                if (!string.IsNullOrEmpty(dto.Description))
+                {
+                    existingTask.Description = dto.Description;
+                }
+                else
+                {
+                    exec.Error.Add("Description cant be empty");
+                    return exec;
+                }
+                if (!string.IsNullOrEmpty(dto.Priority))
+                {
+                    existingTask.Priority = dto.Priority;
+                }
+                else
+                {
+                    exec.Error.Add("Priority cant be empty");
+                    return exec;
+                }
+                if (dto.ProjectId != null)
+                {
+                    existingTask.ProjectId = dto.ProjectId;
+                }
+                else
+                {
+                    exec.Error.Add("Project Id cant be empty");
+                    return exec;
+                }
+                exec.Message.Add("Task is successfuly modified");
+                context.SaveChanges();
+                return exec;
             }
             else
             {
-                
+
                 Tasks taskForInsert = new Tasks();
-                taskForInsert.Name = dto.Name;
-                taskForInsert.Description = dto.Description;
-                taskForInsert.Priority = dto.Priority;
-                taskForInsert.ProjectId = dto.ProjectId;
-                taskForInsert.ProjectId = dto.ProjectId;
+                if (!string.IsNullOrEmpty(dto.Name))
+                {
+                    taskForInsert.Name = dto.Name;
+                }
+                else
+                {
+                    exec.Error.Add("Name cant be empty");
+                    return exec;
+                }
+                if (!string.IsNullOrEmpty(dto.Description))
+                {
+                    taskForInsert.Description = dto.Description;
+                }
+                else
+                {
+                    exec.Error.Add("Description cant be empty");
+                    return exec;
+                }
+                if (!string.IsNullOrEmpty(dto.Priority))
+                {
+                    taskForInsert.Priority = dto.Priority;
+                }
+                else
+                {
+                    exec.Error.Add("Priority cant be empty");
+                    return exec;
+                }
+                if (dto.ProjectId != null)
+                {
+                    taskForInsert.ProjectId = dto.ProjectId;
+                }
+                else
+                {
+                    exec.Error.Add("Project Id cant be empty");
+                    return exec;
+                }
+
                 context.tasks.Add(taskForInsert);
+                exec.Message.Add("Task is successfuly created");
+                context.SaveChanges();
+                return exec;
+
             }
-            context.SaveChanges();
+
         }
     }
+    
 }
+

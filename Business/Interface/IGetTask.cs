@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Business.Interface
 {
     public interface IGetTask
     {
-        public IQueryable getTasks(TaskTrackerContext context, TaskFilterDto taskFilterDto);
+        public ExecutionResult getTasks(TaskTrackerContext context, TaskFilterDto taskFilterDto);
     }
 }

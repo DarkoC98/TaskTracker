@@ -1,4 +1,5 @@
-﻿using Business.Interface;
+﻿using Business.Execution;
+using Business.Interface;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,28 @@ namespace Business.Implementations
 {
     public class DeleteTask : IDeleteTask
     {
-        public void Execute(TaskTrackerContext context, int id)
+        public ExecutionResult Execute(TaskTrackerContext context, int id)
         {
+            ExecutionResult exec = new ExecutionResult();
 
             var taskForDeletion = (from tasks in context.tasks
                                   where tasks.Id == id
                                   select tasks).FirstOrDefault();
 
-            context.tasks.Remove(taskForDeletion);
-            context.SaveChanges();
+            if (taskForDeletion == null)
+            {
+
+                exec.Error.Add("There is not task with that id");
+                return exec;
+            }
+            else
+            {
+                context.tasks.Remove(taskForDeletion);
+                context.SaveChanges();
+                exec.Message.Add("Successfuly deleted task");
+                return exec;
+            }
+            
         }
     }
 }

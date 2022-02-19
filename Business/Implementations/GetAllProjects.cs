@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Interface;
 using DataAccess;
 using System;
@@ -12,8 +13,9 @@ namespace Business.Implementations
 	public class GetAllProjects : IGetAllProjects
     {
 		
-        public IQueryable getAllProjects(TaskTrackerContext context, ProjectFilterDto filterDto)
+        public ExecutionResult getAllProjects(TaskTrackerContext context, ProjectFilterDto filterDto)
         {
+			ExecutionResult exec = new ExecutionResult();
             var projects = context.projects.AsQueryable();
             if(!string.IsNullOrEmpty(filterDto.Name))
             {
@@ -21,18 +23,39 @@ namespace Business.Implementations
 
 
             }
+            else
+            {
+				exec.Error.Add("Name cant be empty");
+				return exec;
+
+			}
 			if (filterDto.StartDate != null)
 			{
-				projects = projects.Where(p => p.StartDate >= filterDto.StartDate);
+				projects = projects.Where(p => p.StartDate == filterDto.StartDate);
 			}
-			if (filterDto.EndDate != null)
+            else
+            {
+				exec.Error.Add("Start Date cant be empty");
+				return exec;
+			}
+			if (filterDto.EndDate > filterDto.StartDate)
 			{
-				projects = projects.Where(p => p.EndDate <= filterDto.EndDate);
+				projects = projects.Where(p => p.EndDate == filterDto.EndDate);
 				
 			}
-			if (filterDto.Status != null)
+            else
+            {
+				exec.Error.Add("End Date cant be empty");
+				return exec;
+			}
+			if (filterDto.Status >= 0 && Convert.ToInt32(filterDto.Status) <= 2)
 			{
 				projects = projects.Where(p => p.Status == filterDto.Status);
+			}
+            else
+            {
+				exec.Error.Add("Status has to be in range from 0 to 2");
+				return exec;
 			}
 			if (filterDto.Priority != null)
 			{
@@ -46,7 +69,8 @@ namespace Business.Implementations
 				EndDate = p.EndDate,
 				Priority = p.Priority
 			}).ToList();
-			return data.AsQueryable();
+			exec.Data = data;
+			return exec;
 			
 		}
     }

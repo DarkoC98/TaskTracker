@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using Business.Interface;
 using DataAccess;
 using System;
@@ -11,22 +12,41 @@ namespace Business.Implementations
 {
     public class GetProjectById : IGetProjectById
     {
-        public object getProjectsById(TaskTrackerContext context, int id)
+        public ExecutionResult getProjectsById(TaskTrackerContext context, int id)
         {
-            ProjectFilterDto dto = new ProjectFilterDto();
+            ExecutionResult exec = new ExecutionResult();
 
-            var existingProjectQuery = from projects in context.projects
-                                       where projects.Id == id
-                                       select projects;
+            var projects = context.projects.AsQueryable();
+            var existingProjectQuery = from p in projects
+                                       where p.Id == id
+                                       select p;
             var existingProject = existingProjectQuery.FirstOrDefault();
 
-            dto.Name = existingProject.Name;
-            dto.StartDate = existingProject.StartDate;
-            dto.EndDate = existingProject.EndDate;
-            dto.Status = existingProject.Status;
-            dto.Priority = existingProject.Priority;
+            if(existingProject != null)
+            {
+                var data = projects.Select(p => new ProjectDto
+                {
+                    Name = existingProject.Name,
+                    Status = existingProject.Status,
+                    StartDate = existingProject.StartDate,
+                    EndDate = existingProject.EndDate,
+                    Priority = existingProject.Priority
+                }).ToList();
+                exec.Data = data;
+                return exec;
+                
+            }
+            else
+            {
+                exec.Error.Add("There is not such project");
+                return exec;
+            }
+            
 
-            return dto;
+
+            
+
+            
 
             
 

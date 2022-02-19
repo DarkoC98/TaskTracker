@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using Business.Execution;
+using DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Business.Interface
 {
     public interface IGetProjectById
     {
-        public object getProjectsById(TaskTrackerContext context, int id);
+        public ExecutionResult getProjectsById(TaskTrackerContext context, int id);
 
     }
 }

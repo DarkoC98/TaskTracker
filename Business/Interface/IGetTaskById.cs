@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Business.Execution;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Business.Interface
 {
     public interface IGetTaskById
     {
-        public object getTaskById(TaskTrackerContext context, int id);
+        public ExecutionResult getTaskById(TaskTrackerContext context, int id);
         
     }
 }
