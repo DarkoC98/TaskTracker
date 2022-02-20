@@ -24,33 +24,24 @@ namespace Business.Implementations
             var existingTaskQuery = (from t in tasks
                                      where t.Id == id
                                      join p in projects on t.ProjectId equals p.Id
-                                     select new
+                                     select new TaskDto
                                      {
-                                         TaskId = t.Id,
-                                         TaskName = t.Name,
-                                         TaskDescription = t.Description,
-                                         TaskPriority = t.Priority,
-                                         TaskProjectId = t.ProjectId,
+                                         Id = t.Id,
+                                         Name = t.Name,
+                                         Description = t.Description,
+                                         Priority = t.Priority,
+                                         ProjectId = t.ProjectId,
                                          ProjectName = p.Name,
-                                         TaskStatus = t.Status
+                                         Status = t.Status
 
                                      }).ToList();
 
             
-            var existingTask = existingTaskQuery.FirstOrDefault();
-            if(existingTask != null)
+            
+            if(existingTaskQuery != null)
             {
-                var data = tasks.Select(t => new TaskDto
-                {
-                    Id = existingTask.TaskId,
-                    Name = existingTask.TaskName,
-                    Description = existingTask.TaskDescription,
-                    Priority = existingTask.TaskPriority,
-                    ProjectId = existingTask.TaskProjectId,
-                    ProjectName = existingTask.ProjectName,
-                    Status = existingTask.TaskStatus
-                }).ToList();
-                exec.Data = data;
+                
+                exec.Data = existingTaskQuery;
                 return exec;
 
 

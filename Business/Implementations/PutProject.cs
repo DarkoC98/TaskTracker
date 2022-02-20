@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Implementations
 {
@@ -61,8 +62,9 @@ namespace Business.Implementations
                     exec.Error.Add("Status has to be in range from 0 to 2");
                     return exec;
                 }
-                
+                existingProject.ModifiedAt = DateTime.Now;
                 existingProject.Priority = dto.Priority;
+                context.Entry(existingProject).State = EntityState.Modified;
                 exec.Message.Add("Project is successfuly modified");
                 context.SaveChanges();
                 return exec;
@@ -108,6 +110,7 @@ namespace Business.Implementations
                     return exec;
                 }
 
+                existingProject.CreatedAt = DateTime.Now;
                 context.projects.Add(projectForInsert);
                 exec.Message.Add("Project is successfuly created");
                 context.SaveChanges();

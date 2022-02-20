@@ -27,6 +27,7 @@ namespace Business.Implementations
             }
             else
             {
+                projectForDeletion.DeletedAt = DateTime.Now;
                 context.projects.Remove(projectForDeletion);
                 context.SaveChanges();
                 exec.Message.Add("Successfully deleted");

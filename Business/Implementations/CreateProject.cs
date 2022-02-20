@@ -65,6 +65,7 @@ namespace Business.Implementations
 
             if (projectsForInsert != null)
             {
+                projectsForInsert.CreatedAt = DateTime.Now;
                 context.projects.Add(projectsForInsert);
                 context.SaveChanges();
                 exec.Message.Add("Successfuly created project");

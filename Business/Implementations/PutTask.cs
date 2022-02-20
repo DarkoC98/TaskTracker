@@ -60,6 +60,7 @@ namespace Business.Implementations
                     exec.Error.Add("Project Id cant be empty");
                     return exec;
                 }
+                existingTask.ModifiedAt = DateTime.Now;
                 exec.Message.Add("Task is successfuly modified");
                 context.SaveChanges();
                 return exec;
@@ -105,6 +106,7 @@ namespace Business.Implementations
                     return exec;
                 }
 
+                taskForInsert.ModifiedAt = DateTime.Now;
                 context.tasks.Add(taskForInsert);
                 exec.Message.Add("Task is successfuly created");
                 context.SaveChanges();

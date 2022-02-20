@@ -28,19 +28,16 @@ namespace TaskTracker.Controllers
         {
             var returns = getAll.getAllProjects(context, filterDto);
 
-            var result = returns.Data;
-            var error = returns.Error;
-            var success = returns.IsSuccessful; 
             
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(result);
+                    return Ok(returns.Data);
                     
                 }
 
@@ -59,18 +56,15 @@ namespace TaskTracker.Controllers
             [FromServices] IGetProjectById getProject)
         {
             var returns = getProject.getProjectsById(context, id);
-            var result = returns.Data;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(result);
+                    return Ok(returns.Data);
                 }
 
             }
@@ -88,19 +82,15 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = createProject.CreateProjects(context, projectDto);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful; 
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
                 }
 
             }
@@ -120,19 +110,15 @@ namespace TaskTracker.Controllers
         {
 
             var returns = putProject.PutProjects(context, dto, id);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
                 }
 
             }
@@ -149,19 +135,15 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = deleteProject.Execute(context, id);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
                     
                 }
 
@@ -178,20 +160,17 @@ namespace TaskTracker.Controllers
         {
 
             var returns = getTasks.getAllTasksForProject(context, projectId);
-            var result = returns.Data;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
                 
                 
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);   
+                    return BadRequest(returns.Error);   
                 }
                 else
                 {
-                    return Ok(result);
+                    return Ok(returns.Data);
                 }
                 
             }

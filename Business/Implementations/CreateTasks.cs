@@ -74,6 +74,7 @@ namespace Business.Implementations
 
             if (tasksForInsert != null)
             {
+                tasksForInsert.CreatedAt = DateTime.Now;
                 context.tasks.Add(tasksForInsert);
                 context.SaveChanges();
                 exec.Message.Add("Successfully created task");

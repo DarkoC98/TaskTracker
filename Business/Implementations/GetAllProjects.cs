@@ -38,7 +38,7 @@ namespace Business.Implementations
 				exec.Error.Add("Start Date cant be empty");
 				return exec;
 			}
-			if (filterDto.EndDate > filterDto.StartDate)
+			if (filterDto.EndDate != null)
 			{
 				projects = projects.Where(p => p.EndDate == filterDto.EndDate);
 				

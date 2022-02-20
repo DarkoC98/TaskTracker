@@ -24,19 +24,15 @@ namespace TaskTracker.Controllers
         {
             var returns = getTask.getTasks(context, taskFilterDto );
 
-            var result = returns.Data;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
-
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(result);
+                    return Ok(returns.Data);
 
                 }
 
@@ -56,18 +52,16 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = getTask.getTaskById(context, id);
-            var result = returns.Data;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
+
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(result);
+                    return Ok(returns.Data);
                 }
 
             }
@@ -84,19 +78,16 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = createTask.CreateTask(context, taskDto);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
+
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
                 }
 
             }
@@ -114,19 +105,15 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = putTask.PutTasks(context, dto, id);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
                 }
 
             }
@@ -144,19 +131,15 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
             var returns = deleteTask.Execute(context, id);
-            var result = returns.Data;
-            var message = returns.Message;
-            var error = returns.Error;
-            var success = returns.IsSuccessful;
             try
             {
-                if (!success)
+                if (!returns.IsSuccessful)
                 {
-                    return BadRequest(error);
+                    return BadRequest(returns.Error);
                 }
                 else
                 {
-                    return Ok(message);
+                    return Ok(returns.Message);
 
                 }
 

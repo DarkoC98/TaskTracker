@@ -17,24 +17,21 @@ namespace Business.Implementations
             ExecutionResult exec = new ExecutionResult();
 
             var projects = context.projects.AsQueryable();
-            var existingProjectQuery = from p in projects
-                                       where p.Id == id
-                                       select p;
-            var existingProject = existingProjectQuery.FirstOrDefault();
+            var existingProjectQuery = (from p in projects
+                                        where p.Id == id
+                                        select new ProjectDto
+                                        {
+                                            Name = p.Name,
+                                            Status = p.Status,
+                                            StartDate = p.StartDate,
+                                            EndDate = p.EndDate,
+                                            Priority = p.Priority
+                                        }).ToList();
 
-            if(existingProject != null)
+            if(existingProjectQuery != null)
             {
-                var data = projects.Select(p => new ProjectDto
-                {
-                    Name = existingProject.Name,
-                    Status = existingProject.Status,
-                    StartDate = existingProject.StartDate,
-                    EndDate = existingProject.EndDate,
-                    Priority = existingProject.Priority
-                }).ToList();
-                exec.Data = data;
-                return exec;
-                
+                exec.Data = existingProjectQuery;
+                return exec;   
             }
             else
             {
