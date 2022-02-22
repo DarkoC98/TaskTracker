@@ -2,6 +2,7 @@
 using Business.Execution;
 using Business.Implementations;
 using Business.Interface;
+using Business.Validation;
 using DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+ 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,7 +20,7 @@ namespace TaskTracker.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        
+        private readonly TaskTrackerContext _context;
 
         // GET: api/<ProjectController>
         [HttpGet]
@@ -26,20 +28,31 @@ namespace TaskTracker.Controllers
             [FromServices] IGetAllProjects getAll,
             [FromServices] TaskTrackerContext context)
         {
-            var returns = getAll.getAllProjects(context, filterDto);
-
+            var validator = new GetAllProjectsValidation(this._context);
+            var result = validator.Validate(filterDto);
             
             try
             {
-                if (!returns.IsSuccessful)
+                if (!result.IsValid)
                 {
-                    return BadRequest(returns.Error);
+                    var errors = result.Errors.Select(err => new
+                    {
+                        PropertyName = err.PropertyName,
+                        PropertyError = err.ErrorMessage
+                    });
+                    return BadRequest(errors);
                 }
-                else
+                var returns = getAll.getAllProjects(context, filterDto);
+
+                if(!returns.IsSuccessful)
                 {
-                    return Ok(returns.Data);
-                    
+                    var errors = returns.Error.Select(err => new
+                    {
+                        ErrorMessage = err
+                    });
+                    return BadRequest(errors);
                 }
+                return Ok(returns.Data);
 
             }
             catch (Exception)
@@ -81,17 +94,31 @@ namespace TaskTracker.Controllers
             [FromServices] ICreateProject createProject,
             [FromServices] TaskTrackerContext context)
         {
-            var returns = createProject.CreateProjects(context, projectDto);
+            var validator = new CreateProjectValidation(_context);
+            var result = validator.Validate(projectDto);
+          
             try
             {
-                if (!returns.IsSuccessful)
+                if (!result.IsValid)
                 {
-                    return BadRequest(returns.Error);
+                    var errors = result.Errors.Select(err => new
+                    {
+                        PropertyName = err.PropertyName,
+                        PropertyError = err.ErrorMessage
+                    });
+                    return BadRequest(errors);
                 }
-                else
+                var returns = createProject.CreateProjects(context, projectDto);
+
+                if(!returns.IsSuccessful)
                 {
-                    return Ok(returns.Message);
+                    var errors = returns.Error.Select(err => new
+                    {
+                        ErrorMessage = err
+                    });
+                    return BadRequest(errors);
                 }
+                return Ok(returns.Message);
 
             }
             catch (Exception)
@@ -109,17 +136,31 @@ namespace TaskTracker.Controllers
             [FromServices] TaskTrackerContext context)
         {
 
-            var returns = putProject.PutProjects(context, dto, id);
+            var validator = new CreateProjectValidation(_context);
+            var result = validator.Validate(dto);
+
             try
             {
+                if (!result.IsValid)
+                {
+                    var errors = result.Errors.Select(err => new
+                    {
+                        PropertyName = err.PropertyName,
+                        PropertyError = err.ErrorMessage
+                    });
+                    return BadRequest(errors);
+                }
+                var returns = putProject.PutProjects(context, dto, id);
+
                 if (!returns.IsSuccessful)
                 {
-                    return BadRequest(returns.Error);
+                    var errors = returns.Error.Select(err => new
+                    {
+                        ErrorMessage = err
+                    });
+                    return BadRequest(errors);
                 }
-                else
-                {
-                    return Ok(returns.Message);
-                }
+                return Ok(returns.Message);
 
             }
             catch (Exception)

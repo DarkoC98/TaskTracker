@@ -24,42 +24,10 @@ namespace Business.Implementations
 
             if (existingTask != null)
             {
-                if (!string.IsNullOrEmpty(dto.Name))
-                {
-                    existingTask.Name = dto.Name;
-                }
-                else
-                {
-                    exec.Error.Add("Name cant be empty");
-                    return exec;
-                }
-                if (!string.IsNullOrEmpty(dto.Description))
-                {
-                    existingTask.Description = dto.Description;
-                }
-                else
-                {
-                    exec.Error.Add("Description cant be empty");
-                    return exec;
-                }
-                if (!string.IsNullOrEmpty(dto.Priority))
-                {
-                    existingTask.Priority = dto.Priority;
-                }
-                else
-                {
-                    exec.Error.Add("Priority cant be empty");
-                    return exec;
-                }
-                if (dto.ProjectId != null)
-                {
-                    existingTask.ProjectId = dto.ProjectId;
-                }
-                else
-                {
-                    exec.Error.Add("Project Id cant be empty");
-                    return exec;
-                }
+                existingTask.Name = dto.Name;
+                existingTask.Description = dto.Description;
+                existingTask.Priority = dto.Priority;
+                existingTask.ProjectId = dto.ProjectId;
                 existingTask.ModifiedAt = DateTime.Now;
                 exec.Message.Add("Task is successfuly modified");
                 context.SaveChanges();
@@ -67,51 +35,17 @@ namespace Business.Implementations
             }
             else
             {
-
                 Tasks taskForInsert = new Tasks();
-                if (!string.IsNullOrEmpty(dto.Name))
-                {
-                    taskForInsert.Name = dto.Name;
-                }
-                else
-                {
-                    exec.Error.Add("Name cant be empty");
-                    return exec;
-                }
-                if (!string.IsNullOrEmpty(dto.Description))
-                {
-                    taskForInsert.Description = dto.Description;
-                }
-                else
-                {
-                    exec.Error.Add("Description cant be empty");
-                    return exec;
-                }
-                if (!string.IsNullOrEmpty(dto.Priority))
-                {
-                    taskForInsert.Priority = dto.Priority;
-                }
-                else
-                {
-                    exec.Error.Add("Priority cant be empty");
-                    return exec;
-                }
-                if (dto.ProjectId != null)
-                {
-                    taskForInsert.ProjectId = dto.ProjectId;
-                }
-                else
-                {
-                    exec.Error.Add("Project Id cant be empty");
-                    return exec;
-                }
 
+                taskForInsert.Name = dto.Name;
+                taskForInsert.Description = dto.Description;
+                taskForInsert.Priority = dto.Priority;
+                taskForInsert.ProjectId = dto.ProjectId;
                 taskForInsert.ModifiedAt = DateTime.Now;
                 context.tasks.Add(taskForInsert);
                 exec.Message.Add("Task is successfuly created");
                 context.SaveChanges();
                 return exec;
-
             }
 
         }

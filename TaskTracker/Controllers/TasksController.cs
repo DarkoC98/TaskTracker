@@ -1,8 +1,10 @@
 ﻿using Business.DTO;
 using Business.Interface;
+using Business.Validation;
 using DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,25 +18,38 @@ namespace TaskTracker.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
+        private readonly TaskTrackerContext _context;
         // GET: api/<TasksController>
         [HttpGet]
         public IActionResult Get([FromQuery] TaskFilterDto taskFilterDto,
             [FromServices] IGetTask getTask,
             [FromServices] TaskTrackerContext context)
         {
-            var returns = getTask.getTasks(context, taskFilterDto );
+            var validator = new GetAllTasksValidation(this._context);
+            var result = validator.Validate(taskFilterDto);
 
             try
             {
+                if (!result.IsValid)
+                {
+                    var errors = result.Errors.Select(err => new
+                    {
+                        PropertyName = err.PropertyName,
+                        PropertyError = err.ErrorMessage
+                    });
+                    return BadRequest(errors);
+                }
+                var returns = getTask.getTasks(context, taskFilterDto);
+
                 if (!returns.IsSuccessful)
                 {
-                    return BadRequest(returns.Error);
+                    var errors = returns.Error.Select(err => new
+                    {
+                        ErrorMessage = err
+                    });
+                    return BadRequest(errors);
                 }
-                else
-                {
-                    return Ok(returns.Data);
-
-                }
+                return Ok(returns.Data);
 
             }
             catch (Exception)
@@ -77,18 +92,32 @@ namespace TaskTracker.Controllers
             [FromServices] ICreateTask createTask,
             [FromServices] TaskTrackerContext context)
         {
-            var returns = createTask.CreateTask(context, taskDto);
+            
+            var validator = new CreateTaskValidation(_context);
+            var result = validator.Validate(taskDto);
 
             try
             {
+                if (!result.IsValid)
+                {
+                    var errors = result.Errors.Select(err => new
+                    {
+                        PropertyName = err.PropertyName,
+                        PropertyError = err.ErrorMessage
+                    });
+                    return BadRequest(errors);
+                }
+                var returns = createTask.CreateTask(context, taskDto);
+
                 if (!returns.IsSuccessful)
                 {
-                    return BadRequest(returns.Error);
+                    var errors = returns.Error.Select(err => new
+                    {
+                        ErrorMessage = err
+                    });
+                    return BadRequest(errors);
                 }
-                else
-                {
-                    return Ok(returns.Message);
-                }
+                return Ok(returns.Message);
 
             }
             catch (Exception)

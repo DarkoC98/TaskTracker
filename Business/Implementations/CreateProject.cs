@@ -17,65 +17,18 @@ namespace Business.Implementations
         {
             ExecutionResult exec = new ExecutionResult();
             Project projectsForInsert = new Project();
-            if (!String.IsNullOrEmpty(dto.Name))
-            {
-                projectsForInsert.Name = dto.Name;
-                
-            }
-            else
-            {
-                exec.Error.Add("Name cant be empty");
-                return exec;
-            }
-            
-            if (dto.StartDate != null)
-            {
-                projectsForInsert.StartDate = dto.StartDate;
-                
-            }
-            else
-            {
-                exec.Error.Add("Start Date cant be empty");
-                return exec;
-            }
-            
-            if (dto.EndDate > dto.StartDate)
-            {
-                projectsForInsert.EndDate = dto.EndDate;
-            }
-            else
-            {
-                exec.Error.Add("End Date has to be after Start Date");
-                return exec;
-            }
-            
-
-            if (dto.Status >=0 && Convert.ToInt32(dto.Status) <= 2)
-            {
-                projectsForInsert.Status = dto.Status;
-            }
-            else
-            {
-                exec.Error.Add("Status has to be in range from 0 to 2");
-                return exec;
-            }
-            
+      
+            projectsForInsert.Name = dto.Name;
+            projectsForInsert.StartDate = dto.StartDate;
+            projectsForInsert.EndDate = dto.EndDate;
+            projectsForInsert.Status = dto.Status;
             projectsForInsert.Priority= dto.Priority;
-
-
-            if (projectsForInsert != null)
-            {
-                projectsForInsert.CreatedAt = DateTime.Now;
-                context.projects.Add(projectsForInsert);
-                context.SaveChanges();
-                exec.Message.Add("Successfuly created project");
-                return exec;
-            }
-            else
-            {
-                exec.Error.Add("Bad request");
-                return exec;
-            }
+            projectsForInsert.CreatedAt = DateTime.Now;
+            context.projects.Add(projectsForInsert);
+            context.SaveChanges();
+            exec.Message.Add("Project created successfully");
+            return exec;
+            
 
 
         }

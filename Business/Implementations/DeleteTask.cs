@@ -22,7 +22,7 @@ namespace Business.Implementations
             if (taskForDeletion == null)
             {
 
-                exec.Error.Add("There is not task with that id");
+                exec.Error.Add("There is no task with that id");
                 return exec;
             }
             else

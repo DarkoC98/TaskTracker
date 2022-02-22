@@ -16,49 +16,10 @@ namespace Business.Implementations
         {
 			ExecutionResult exec = new ExecutionResult();
 			var tasks = context.tasks.AsQueryable();
-			if (!string.IsNullOrEmpty(taskFilterDto.Name))
-			{
-				tasks = tasks.Where(t => t.Name.ToLower().Contains(taskFilterDto.Name.ToLower()));
-
-
-			}
-			else
-			{
-				exec.Error.Add("Name cant be empty");
-				return exec;
-
-			}
-			if (taskFilterDto.Description != null)
-			{
-				tasks = tasks.Where(t => t.Description == taskFilterDto.Description);
-			}
-			else
-			{
-				exec.Error.Add("Description cant be empty");
-				return exec;
-
-			}
-			if (taskFilterDto.Priority != null  )
-			{
-				tasks = tasks.Where(t => t.Priority == taskFilterDto.Priority);
-
-			}
-			else
-			{
-				exec.Error.Add("Priority cant be empty");
-				return exec;
-
-			}
-			if (taskFilterDto.Status != null)
-			{
-				tasks = tasks.Where(t => t.Status == taskFilterDto.Status);
-			}
-			else
-			{
-				exec.Error.Add("Status cant be empty");
-				return exec;
-
-			}
+			tasks = tasks.Where(t => t.Name.ToLower().Contains(taskFilterDto.Name.ToLower()));
+			tasks = tasks.Where(t => t.Description == taskFilterDto.Description);
+			tasks = tasks.Where(t => t.Priority == taskFilterDto.Priority);
+			tasks = tasks.Where(t => t.Status == taskFilterDto.Status);
 
 			var data = tasks.OrderBy(t => t.Priority).Select(t => new TaskDto
 			{

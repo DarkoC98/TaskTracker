@@ -22,7 +22,7 @@ namespace Business.Implementations
             if(projectForDeletion == null)
             {
                 
-                exec.Error.Add("There is not project with that id");
+                exec.Error.Add("There is no project with that id");
                 return exec;
             }
             else
